@@ -1,0 +1,27 @@
+| MercStance 1.0 ~ NecroGnomie!
+| Simple script to control mercs.
+| If the target is 2 levels over your toon, a named, or you have more than 1 thing on Xtarget, will put cleric mercs into reactive stance.
+| If the target is below 95% HPs, and merc is below 85% aggro, puts DPS mercs into burn stance.
+| If merc aggro goes over 85%, or not in combat, changes DPS mercs and cleric mercs to balanced stance.
+| Does not alter Warrior mercs.
+| Revives dead mercs.
+
+Sub Main
+	/declare MercStanceTimer	timer	outer 0
+	:loop
+	/if (${Target.PctHPs}<98) /call mercstuff	
+	/delay 1s
+    /goto :loop
+/return
+
+Sub MercStuff
+	/if (${Mercenary.State.Equal[ACTIVE]}) {
+		/if (${Me.CombatState.NotEqual[COMBAT]} && ${Mercenary.Class.Name.NotEqual[Warrior]} && ${Mercenary.Stance.NotEqual[Balanced]}) /stance Balanced
+		/if (${Mercenary.Stance.NotEqual[Balanced]} && (${Mercenary.Class.Name.Equal[Rogue]} || ${Mercenary.Class.Name.Equal[Wizard]}) && (${Me.GroupAssistTarget.PctHPs}>80 || ${Group.Member[${Me.Mercenary.CleanName}].PctAggro}>85)) /stance Balanced
+		/if ((${Target.Level}>=(${Me.Level}+2) || ${Target.Named} || ${Me.XTarget}>2) && !${Me.GroupAssistTarget.Type.NotEqual[PC]} && ${Mercenary.Stance.NotEqual[Reactive]} && ${Mercenary.Class.Name.Equal[Cleric]}) /stance reactive
+		/if (${Mercenary.Stance.NotEqual[Burn]} && (${Mercenary.Class.Name.Equal[Rogue]} || ${Mercenary.Class.Name.Equal[Wizard]}) && ${Me.GroupAssistTarget.PctHPs}<95 && ${Group.Member[${Me.Mercenary.CleanName}].PctAggro}<85 && ${Me.GroupAssistTarget.Type.NotEqual[PC]}) /stance Burn
+	/if (${Window[MMGW_ManageWnd].Child[MMGW_SuspendButton].Enabled} && ${Mercenary.State.Equal[DEAD]}) {
+		/notify MMGW_ManageWnd MMGW_SuspendButton LeftMouseUp
+		/delay 10s ${Mercenary.State.Equal[ACTIVE]}
+		}
+	/return

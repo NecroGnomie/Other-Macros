@@ -1,0 +1,84 @@
+|Toys.Mac
+|
+|Trader pet toys: used to load up trader with mage pet toys
+| 	run on mage, have trader say in /bc what item and amount wanted
+| 	possible keywords: mask, weapons, focus, armor
+| 	Example "/bc mask 17"
+|		The mage will target the sender, and summon X item X amount of times
+|
+|	Required Plugin:
+|		MQ2Cast
+
+#CHAT BC
+#CHAT TELL
+
+#event EQBC            "<#1#> #2#" 
+
+Sub Main
+:mainloop
+	/if (${Me.Class.ShortName.NotEqual[MAG]}) {
+		/echo This macro is for a MAGE!!!
+		/end
+		}
+	/doevents
+	/delay 1s
+	/if (${Window[TradeWnd].HisTradeReady}) /notify TradeWnd TRDW_Trade_Button leftmouseup
+	/if (${Cursor.ID}) /AUTOINV
+	/goto :mainloop
+	
+Sub Event_EQBC(EQBCSay,EQBCSender,EQBCCommand) 
+	/if (${EQBCCommand.Left[1].Equal[/]}) { 
+		/docommand ${EQBCCommand} 
+		} else { 
+		/call Event_Chat "EQBC" "${EQBCSender}" "${EQBCCommand}" 
+		} 
+		/return	
+	
+Sub Event_Chat(string ChatType,string Sender,string ChatText)
+	/if (${ChatText.Find[weapons]}) {
+		/target ${Spawn[pc ${Sender}].CleanName}
+		/delay 1s
+		/casting "Grant Thassis' Armaments" gem3 -recast|${ChatText.Arg[2]}
+		/bc [+g+]Casting [+y+]"Grant Thassis' Armaments" [+g+]at [+m+]${Target.CleanName} [+o+]${ChatText.Arg[2]} [+g+]times
+		/delay 10s
+		/return
+		}
+	
+	/if (${ChatText.Find[mask]}) {
+		/target ${Spawn[pc ${Sender}].CleanName}
+		/delay 1s	
+		/casting "Grant Visor of Gobeker" gem1 -recast|${ChatText.Arg[2]}
+		/bc [+g+]Casting [+y+]""Grant Visor of Gobeker" [+g+]at [+m+]${Target.CleanName} [+o+]${ChatText.Arg[2]} [+g+]times
+		/delay 10s
+		/return
+		}
+	
+	/if (${ChatText.Find[armor]}) {
+		/target ${Spawn[pc ${Sender}].CleanName}
+		/delay 1s	
+		/casting "Grant Thassis' Plate" gem1 -recast|${ChatText.Arg[2]}
+		/bc [+g+]Casting [+y+]"Grant Thassis' Plate" [+g+]at [+m+]${Target.CleanName} [+o+]${ChatText.Arg[2]} [+g+]times
+		/delay 10s
+		/return	
+		}
+	
+	/if (${ChatText.Find[focus]}) {
+		/target ${Spawn[pc ${Sender}].CleanName}
+		/delay 1s	
+		/casting "Grant Calix's Heirlooms" gem1 -recast|${ChatText.Arg[2]}
+		/bc [+g+]Casting [+y+]"Grant Calix's Heirlooms" [+g+]at [+m+]${Target.CleanName} [+o+]${ChatText.Arg[2]} [+g+]times
+		/delay 10s
+		/return
+		}
+	/if (${ChatText.Find[Toys HELP]}) {
+		/bc [+y+] Help Commands!!
+		/delay 1s
+		/bc [+y+] This macro is intended to help load up trader toons with mage summoned items. Issue a keyword plus the amount you wish
+		/delay 1s
+		/bc [+y+] Keywords = w*e*a*p*o*n*s
+		/delay 1s 
+		/bc [+y+] m*a*s*k, a*r*m*o*r, and f*o*c*u*s
+		/doevents flush
+		/return
+		}	
+	/return
