@@ -20,8 +20,10 @@ Sub MercStuff
 		/if (${Mercenary.Stance.NotEqual[Balanced]} && (${Mercenary.Class.Name.Equal[Rogue]} || ${Mercenary.Class.Name.Equal[Wizard]}) && (${Me.GroupAssistTarget.PctHPs}>80 || ${Group.Member[${Me.Mercenary.CleanName}].PctAggro}>85)) /stance Balanced
 		/if ((${Target.Level}>=(${Me.Level}+2) || ${Target.Named} || ${Me.XTarget}>2) && !${Me.GroupAssistTarget.Type.NotEqual[PC]} && ${Mercenary.Stance.NotEqual[Reactive]} && ${Mercenary.Class.Name.Equal[Cleric]}) /stance reactive
 		/if (${Mercenary.Stance.NotEqual[Burn]} && (${Mercenary.Class.Name.Equal[Rogue]} || ${Mercenary.Class.Name.Equal[Wizard]}) && ${Me.GroupAssistTarget.PctHPs}<95 && ${Group.Member[${Me.Mercenary.CleanName}].PctAggro}<85 && ${Me.GroupAssistTarget.Type.NotEqual[PC]}) /stance Burn
-	/if (${Window[MMGW_ManageWnd].Child[MMGW_SuspendButton].Enabled} && ${Mercenary.State.Equal[DEAD]}) {
+		}	
+/if (${Window[MMGW_ManageWnd].Child[MMGW_SuspendButton].Enabled} && ${Mercenary.State.Equal[DEAD]}) {
 		/notify MMGW_ManageWnd MMGW_SuspendButton LeftMouseUp
 		/delay 10s ${Mercenary.State.Equal[ACTIVE]}
 		}
 	/return
+
